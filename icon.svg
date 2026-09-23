@@ -1,6 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="110" fill="#1769c2"/>
-  <rect x="116" y="100" width="280" height="312" rx="42" fill="#fff"/>
-  <rect x="154" y="145" width="204" height="64" rx="12" fill="#dcecff"/>
-  <path d="M179 258h45m64 0h45M179 321h45m64 0h45" stroke="#1769c2" stroke-width="24" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="起飞的小火箭">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#102b55"/>
+      <stop offset="1" stop-color="#246fbd"/>
+    </linearGradient>
+    <linearGradient id="flame" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff8b4a"/>
+      <stop offset="1" stop-color="#ffd36b"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#sky)"/>
+  <circle cx="256" cy="236" r="167" fill="#70c9ff" opacity=".10"/>
+  <path d="M127 190v27m-13-13h26M376 149v23m-11-11h22" fill="none" stroke="#a9dcff" stroke-linecap="round" stroke-width="7" opacity=".72"/>
+  <path d="M204 274c-30 12-48 39-56 81l61-19zM308 274c30 12 48 39 56 81l-61-19z" fill="#5adbd0"/>
+  <path d="M234 358c-12 28-8 44 5 62l17 25 17-25c13-18 17-34 5-62z" fill="url(#flame)"/>
+  <path d="M245 367c-5 18-2 29 11 49 13-20 16-31 11-49z" fill="#fff0a4"/>
+  <path d="M256 101c-39 31-58 85-55 164l7 68c14 13 31 21 48 27 17-6 34-14 48-27l7-68c3-79-16-133-55-164z" fill="#f8fcff"/>
+  <path d="M256 101c-18 14-32 34-42 59 14-6 28-9 42-9s28 3 42 9c-10-25-24-45-42-59z" fill="#d9efff"/>
+  <circle cx="256" cy="224" r="39" fill="#1769a8"/>
+  <circle cx="256" cy="224" r="29" fill="#58bfed"/>
+  <path d="M221 326c11 9 23 15 35 19 12-4 24-10 35-19l-10 35h-50z" fill="#d9efff"/>
 </svg>
