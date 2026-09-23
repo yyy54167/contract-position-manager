@@ -1,4 +1,4 @@
-const CACHE = 'position-calculator-v3';
+const CACHE = 'position-calculator-v4';
 const ASSETS = ['/', '/index.html', '/styles.css', '/app.js', '/calc.mjs', '/icon.svg', '/icon-192.png', '/icon-512.png', '/manifest.webmanifest'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));
