@@ -35,23 +35,23 @@
         <section class="panel inputs-panel" aria-labelledby="inputs-heading">
           <div class="panel-head"><div><span class="section-number">01 / 参数设置</span><h2 id="inputs-heading">你的交易计划</h2></div><button class="text-button" id="reset" type="button">重置参数 ↗</button></div>
 
-          <div class="direction-row" role="group" aria-label="交易方向">
-            <button type="button" class="direction active" data-direction="long" aria-pressed="true"><span class="direction-symbol">↗</span> 做多 <small>LONG</small></button>
-            <button type="button" class="direction" data-direction="short" aria-pressed="false"><span class="direction-symbol">↘</span> 做空 <small>SHORT</small></button>
+          <div class="direction-auto" aria-live="polite">
+            <span><small>交易方向</small><strong id="direction-label">待判定</strong></span>
+            <span class="auto-tag">按开仓价与止损价自动判定</span>
           </div>
 
           <form id="calculator" novalidate>
             <div class="form-grid">
-              <label class="field full"><span class="field-title">全仓仓位 <span class="field-note">可用资金</span></span><span class="input-wrap"><input id="capital" name="capital" type="number" min="0" step="any" inputmode="decimal" value="1000" autocomplete="off"><span class="suffix">USDT</span></span></label>
-              <label class="field"><span class="field-title">开仓价格</span><span class="input-wrap"><input id="entry" name="entry" type="number" min="0" step="any" inputmode="decimal" value="100" autocomplete="off"><span class="suffix">USDT</span></span></label>
-              <label class="field"><span class="field-title">止损价格</span><span class="input-wrap"><input id="stop" name="stop" type="number" min="0" step="any" inputmode="decimal" value="95" autocomplete="off"><span class="suffix">USDT</span></span></label>
-              <label class="field"><span class="field-title">风险百分比 <button type="button" class="help-button" id="risk-help" aria-label="查看风险百分比说明" aria-expanded="false">?</button></span><span class="input-wrap"><input id="risk" name="risk" type="number" min="0" max="100" step="any" inputmode="decimal" value="2" autocomplete="off"><span class="suffix">%</span></span></label>
+              <label class="field full"><span class="field-title">全仓仓位 <span class="field-note">可用资金</span></span><span class="input-wrap"><input id="capital" name="capital" type="number" min="0" step="any" inputmode="decimal" value="100" autocomplete="off"><span class="suffix">USDT</span></span></label>
+              <label class="field"><span class="field-title">开仓价格</span><span class="input-wrap"><input id="entry" name="entry" type="number" min="0" step="any" inputmode="decimal" placeholder="请输入开仓价" autocomplete="off"><span class="suffix">USDT</span></span></label>
+              <label class="field"><span class="field-title">止损价格</span><span class="input-wrap"><input id="stop" name="stop" type="number" min="0" step="any" inputmode="decimal" placeholder="请输入止损价" autocomplete="off"><span class="suffix">USDT</span></span></label>
+              <label class="field"><span class="field-title">风险百分比 <button type="button" class="help-button" id="risk-help" aria-label="查看风险百分比说明" aria-expanded="false">?</button></span><span class="input-wrap"><input id="risk" name="risk" type="number" min="0" max="100" step="any" inputmode="decimal" value="5" autocomplete="off"><span class="suffix">%</span></span></label>
               <label class="field"><span class="field-title">杠杆倍数</span><span class="input-wrap"><input id="leverage" name="leverage" type="number" min="0" step="any" inputmode="decimal" value="10" autocomplete="off"><span class="suffix">×</span></span></label>
             </div>
-            <p class="field-explainer" id="risk-explainer" hidden>依照指定公式，风险百分比乘以<strong>开仓价格</strong>来得到止损量；它不等于账户资金的风险百分比。右侧会单独显示实际账户风险。</p>
+            <p class="field-explainer" id="risk-explainer" hidden>风险百分比乘以<strong>全仓仓位</strong>，得到这笔交易计划承受的止损量。例如资金 100 USDT、风险 5%，止损量为 5 USDT。</p>
           </form>
 
-          <div class="formula-note"><span class="formula-icon" aria-hidden="true">ƒ</span><div><strong>公式透明可见</strong><p>止损量 = 开仓价 × 风险百分比；仓量 = 止损量 ÷（止损距离比 × 杠杆）。</p></div></div>
+          <div class="formula-note"><span class="formula-icon" aria-hidden="true">ƒ</span><div><strong>公式透明可见</strong><p>止损量 = 全仓仓位 × 风险百分比；仓量 = 止损量 ÷（止损距离比 × 杠杆）。</p></div></div>
         </section>
 
         <section class="panel results-panel" aria-labelledby="results-heading" aria-live="polite">
@@ -62,7 +62,7 @@
           <div class="hero-result"><span class="result-label">所需仓量 <span>保证金 · USDT</span></span><div class="hero-number" id="margin">—</div><div class="hero-caption">按止损距离与杠杆反推的保证金</div></div>
 
           <div class="result-grid">
-            <div class="result-box"><span>止损量</span><strong id="stop-amount">—</strong><small>USDT · 按指定公式</small></div>
+            <div class="result-box"><span>止损量</span><strong id="stop-amount">—</strong><small>USDT · 全仓仓位 × 风险%</small></div>
             <div class="result-box"><span>合约数量</span><strong id="quantity">—</strong><small>标的单位</small></div>
             <div class="result-box"><span>名义仓位</span><strong id="notional">—</strong><small>USDT · 仓量 × 杠杆</small></div>
             <div class="result-box"><span>止损距离</span><strong id="distance">—</strong><small>开仓价的百分比</small></div>

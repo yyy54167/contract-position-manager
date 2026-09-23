@@ -2,9 +2,8 @@ import { calculatePosition } from './calc.mjs';
 
 const $ = id => document.getElementById(id);
 const fields = ['capital', 'entry', 'stop', 'risk', 'leverage'];
-const storageKey = 'position-compass-inputs-v1';
-const defaults = { capital: '1000', entry: '100', stop: '95', risk: '2', leverage: '10', direction: 'long' };
-let direction = defaults.direction;
+const storageKey = 'position-compass-inputs-v2';
+const defaults = { capital: '100', entry: '', stop: '', risk: '5', leverage: '10' };
 let currentResult = null;
 
 function format(value, maximumFractionDigits = 2) {
@@ -13,29 +12,24 @@ function format(value, maximumFractionDigits = 2) {
 
 function readInput() {
   const numeric = Object.fromEntries(fields.map(id => [id, Number($(id).value)]));
-  return { capital: numeric.capital, entry: numeric.entry, stop: numeric.stop, riskPercent: numeric.risk, leverage: numeric.leverage, direction };
-}
-
-function setDirection(next) {
-  direction = next;
-  document.querySelectorAll('[data-direction]').forEach(button => {
-    const active = button.dataset.direction === next;
-    button.classList.toggle('active', active);
-    button.setAttribute('aria-pressed', String(active));
-  });
-  render();
+  return { capital: numeric.capital, entry: numeric.entry, stop: numeric.stop, riskPercent: numeric.risk, leverage: numeric.leverage };
 }
 
 function save() {
-  try { localStorage.setItem(storageKey, JSON.stringify({ ...Object.fromEntries(fields.map(id => [id, $(id).value])), direction })); } catch {}
+  try { localStorage.setItem(storageKey, JSON.stringify(Object.fromEntries(fields.map(id => [id, $(id).value])))); } catch {}
 }
 
 function load() {
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
     for (const id of fields) if (typeof saved[id] === 'string') $(id).value = saved[id];
-    if (saved.direction === 'long' || saved.direction === 'short') direction = saved.direction;
   } catch {}
+}
+
+function setDirectionLabel(direction) {
+  const label = $('direction-label');
+  label.textContent = direction === 'long' ? '↗ 自动判定：做多' : direction === 'short' ? '↘ 自动判定：做空' : '待判定';
+  label.classList.toggle('short', direction === 'short');
 }
 
 function clearResults() {
@@ -48,6 +42,15 @@ function clearResults() {
 
 function render() {
   save();
+  if ($('entry').value.trim() === '' || $('stop').value.trim() === '') {
+    $('error').hidden = true;
+    $('warning').hidden = true;
+    $('status-chip').textContent = '等待价格';
+    $('status-chip').classList.remove('invalid');
+    setDirectionLabel(null);
+    clearResults();
+    return;
+  }
   const raw = readInput();
   const result = calculatePosition(raw);
   $('error').hidden = !result.error;
@@ -55,7 +58,8 @@ function render() {
   $('warning').hidden = true;
   $('status-chip').textContent = result.error ? '待检查' : '已计算';
   $('status-chip').classList.toggle('invalid', Boolean(result.error));
-  if (result.error) { clearResults(); return; }
+  if (result.error) { setDirectionLabel(null); clearResults(); return; }
+  setDirectionLabel(result.direction);
   currentResult = { input: raw, result };
   $('margin').textContent = format(result.margin, 4);
   $('stop-amount').textContent = format(result.stopAmount, 4);
@@ -77,7 +81,6 @@ function render() {
 }
 
 fields.forEach(id => $(id).addEventListener('input', render));
-document.querySelectorAll('[data-direction]').forEach(button => button.addEventListener('click', () => setDirection(button.dataset.direction)));
 $('calculator').addEventListener('submit', event => event.preventDefault());
 $('risk-help').addEventListener('click', () => {
   const hidden = $('risk-explainer').hidden;
@@ -86,17 +89,17 @@ $('risk-help').addEventListener('click', () => {
 });
 $('reset').addEventListener('click', () => {
   for (const id of fields) $(id).value = defaults[id];
-  setDirection(defaults.direction);
+  render();
 });
 $('copy').addEventListener('click', async () => {
   if (!currentResult) return;
   const { input, result } = currentResult;
   const text = [
     '仓位罗盘 · 合约仓位测算',
-    `方向：${input.direction === 'long' ? '做多' : '做空'}`,
+    `方向：${result.direction === 'long' ? '做多' : '做空'}（自动判定）`,
     `全仓仓位：${format(input.capital, 4)} USDT`,
     `开仓价 / 止损价：${format(input.entry, 8)} / ${format(input.stop, 8)} USDT`,
-    `风险百分比（开仓价基数）：${format(input.riskPercent, 4)}%` ,
+    `风险百分比（全仓仓位基数）：${format(input.riskPercent, 4)}%` ,
     `杠杆：${format(input.leverage, 4)}×`,
     `止损量：${format(result.stopAmount, 4)} USDT`,
     `仓量 / 保证金：${format(result.margin, 4)} USDT`,
@@ -116,5 +119,5 @@ $('copy').addEventListener('click', async () => {
 });
 
 load();
-setDirection(direction);
+render();
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('/sw.js').catch(() => {});
