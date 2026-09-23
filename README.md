@@ -23,3 +23,5 @@
 本地预览：`python -m http.server 8080`，访问 `http://localhost:8080`。
 
 运行公式测试：`node --test tests/*.test.mjs`。
+
+图标源文件是 `icon.svg`，同设计的 PNG 主屏幕图标可运行 `python scripts/render_icon.py` 重新生成（需要 Pillow）。
